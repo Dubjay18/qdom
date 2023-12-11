@@ -1,6 +1,4 @@
 import mongoose from "mongoose";
-import bcrypt from "bcrypt";
-import { boolStringIsEmpty } from "@/utils/general/string.util";
 import {
   strQuestionModelConstant,
   strQuizModelConstant,
