@@ -24,6 +24,11 @@ const jwtHelper = new JwtHelper({
   UserTokenDb: userAuthTokenModel,
 });
 
+/**
+ * Sends a sign-up OTP (One-Time Password) to the specified email address.
+ * @param body - The request body containing the email address.
+ * @throws BadRequestError - If the email address already exists or an OTP has been sent within the last minute.
+ */
 export async function sendSignUpOtp(
   body: ISignupOtpRequest
 ) {
@@ -62,6 +67,12 @@ export async function sendSignUpOtp(
   // TODO: send email
 }
 
+/**
+ * Verifies the sign-up OTP (One-Time Password) for the specified email address.
+ * @param body - The request body containing the email address and OTP.
+ * @returns The JWT (JSON Web Token) for the verified user.
+ * @throws BadRequestError - If the OTP is invalid or has expired.
+ */
 export async function verifySignupOtp(
   body: ISignupOtpVerifyRequest
 ): Promise<string> {
@@ -94,6 +105,12 @@ export async function verifySignupOtp(
   return token;
 }
 
+/**
+ * Authenticates the user with the provided email and password.
+ * @param body - The request body containing the email and password.
+ * @returns The login response containing the JWT (JSON Web Token) and user information.
+ * @throws BadRequestError - If the email or password is invalid.
+ */
 export async function login(
   body: ILoginRequest
 ): Promise<ILoginResponse> {
