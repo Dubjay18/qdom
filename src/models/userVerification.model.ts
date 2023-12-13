@@ -31,7 +31,7 @@ const UserVerificationSchema = new mongoose.Schema(
   }
 );
 
-export const UserVerificationDb = mongoose.model(
+export default mongoose.model(
   strUserModelConstant,
   UserVerificationSchema
 );

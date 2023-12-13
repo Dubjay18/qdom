@@ -12,7 +12,7 @@ interface GenerateTokenParam {
 /**
  * Helper class for working with JSON Web Tokens (JWT).
  */
-class JwtHelper {
+export class JwtHelper {
   private configOption: JwtConfig;
   handleJsonResponse?: Function;
   UserTokenDb: any;
