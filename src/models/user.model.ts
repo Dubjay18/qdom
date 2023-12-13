@@ -2,8 +2,28 @@ import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import { boolStringIsEmpty } from "@/utils/general/string.util";
 import { strUserModelConstant } from "./model.constants";
+import { Model } from "mongoose";
 
-const UserSchema = new mongoose.Schema(
+interface IUserAuthDocument {
+  _id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  password: string;
+  // type: AuthType,
+}
+
+export interface IUserAuth extends IUserAuthDocument {
+  verifyPassword(arg: string): boolean;
+  save(args: object): void;
+}
+
+interface IUserAuthModel extends Model<IUserAuth> {}
+
+const UserSchema = new mongoose.Schema<
+  IUserAuthDocument,
+  IUserAuthModel
+>(
   {
     firstName: {
       required: [true, "First name is required"],
@@ -20,6 +40,8 @@ const UserSchema = new mongoose.Schema(
     password: {
       type: String,
       required: [true, "User's password is required"],
+      bcrypt: true,
+      rounds: 10,
       minlength: [
         8,
         "Password must be more than 8 characters long",
@@ -48,7 +70,10 @@ const UserSchema = new mongoose.Schema(
 //   // ------------> Next actions please
 //   next();
 // });
-export default mongoose.model(
-  strUserModelConstant,
-  UserSchema
-);
+
+UserSchema.plugin(require("mongoose-bcrypt"));
+
+export default mongoose.model<
+  IUserAuthDocument,
+  IUserAuthModel
+>(strUserModelConstant, UserSchema);
