@@ -1,6 +1,9 @@
 import * as mongoose from "mongoose";
 import { OtpType } from "./types";
-import { strUserModelConstant } from "./model.constants";
+import {
+  strUserModelConstant,
+  strUserVerificationModelConstant,
+} from "./model.constants";
 
 const UserVerificationSchema = new mongoose.Schema(
   {
@@ -32,6 +35,6 @@ const UserVerificationSchema = new mongoose.Schema(
 );
 
 export default mongoose.model(
-  strUserModelConstant,
+  strUserVerificationModelConstant,
   UserVerificationSchema
 );
