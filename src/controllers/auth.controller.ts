@@ -18,6 +18,8 @@ class AuthController extends BaseController {
       });
     } catch (err: any) {
       // Error handling
+      console.log(err, "-----");
+
       this.handleError(err);
     }
   }
