@@ -63,7 +63,7 @@ const UserSchema = new mongoose.Schema<
 //       // Generate access token for user as well
 //       this.accessToken = generateToken(this);
 //     } catch (errorHashingPassword) {
-//       // TODO: Replace with application error
+//       // : Replace with application error
 //       throw new Error("Can't hash user's password");
 //     }
 //   }

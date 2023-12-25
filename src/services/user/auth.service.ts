@@ -18,6 +18,7 @@ import BadRequestError from "@/errors/BadRequestError";
 import userVerificationModel from "@/models/userVerification.model";
 import { generateOtp } from "@/utils/general/string.util";
 import { OtpType, UserVerification } from "@/models/types";
+import EmailService from "./email.service";
 
 const jwtHelper = new JwtHelper({
   privateKey: jwtPrivateKey,
@@ -64,7 +65,12 @@ export async function sendSignUpOtp(
   });
   // Save the record
   await newVerification.save();
-  // TODO: send email
+  const emailService = new EmailService();
+  emailService.sendEmail(
+    email,
+    "Verify your email address",
+    `Your OTP is ${otp} it expires in 10 minutes. <br/> <h1>${otp}</h1>`
+  );
 }
 
 /**
@@ -129,25 +135,6 @@ export async function login(
     throw new BadRequestError({
       message: "Invalid email or password",
     });
-  } else {
-    /** generate, save and send a new verification otp for the user*/
-    const otp = generateOtp();
-
-    /**upsert-true...  */
-    await userVerificationModel.updateOne(
-      { email },
-      {
-        email,
-        otp,
-
-        type: OtpType.LOGIN,
-        expiresAt: new Date(Date.now() + 10 * 60 * 1000),
-        user: existingUserAuth._id,
-      },
-      { upsert: true }
-    );
-
-    //TODO: send email function goes here
   }
 
   /**generate and save access_token for user*/
