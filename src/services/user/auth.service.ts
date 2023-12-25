@@ -18,12 +18,18 @@ import BadRequestError from "@/errors/BadRequestError";
 import userVerificationModel from "@/models/userVerification.model";
 import { generateOtp } from "@/utils/general/string.util";
 import { OtpType, UserVerification } from "@/models/types";
+import EmailService from "./email.service";
 
 const jwtHelper = new JwtHelper({
   privateKey: jwtPrivateKey,
   UserTokenDb: userAuthTokenModel,
 });
 
+/**
+ * Sends a sign-up OTP (One-Time Password) to the specified email address.
+ * @param body - The request body containing the email address.
+ * @throws BadRequestError - If the email address already exists or an OTP has been sent within the last minute.
+ */
 export async function sendSignUpOtp(
   body: ISignupOtpRequest
 ) {
@@ -59,9 +65,20 @@ export async function sendSignUpOtp(
   });
   // Save the record
   await newVerification.save();
-  // TODO: send email
+  const emailService = new EmailService();
+  emailService.sendEmail(
+    email,
+    "Verify your email address",
+    `Your OTP is ${otp} it expires in 10 minutes. <br/> <h1>${otp}</h1>`
+  );
 }
 
+/**
+ * Verifies the sign-up OTP (One-Time Password) for the specified email address.
+ * @param body - The request body containing the email address and OTP.
+ * @returns The JWT (JSON Web Token) for the verified user.
+ * @throws BadRequestError - If the OTP is invalid or has expired.
+ */
 export async function verifySignupOtp(
   body: ISignupOtpVerifyRequest
 ): Promise<string> {
@@ -94,6 +111,12 @@ export async function verifySignupOtp(
   return token;
 }
 
+/**
+ * Authenticates the user with the provided email and password.
+ * @param body - The request body containing the email and password.
+ * @returns The login response containing the JWT (JSON Web Token) and user information.
+ * @throws BadRequestError - If the email or password is invalid.
+ */
 export async function login(
   body: ILoginRequest
 ): Promise<ILoginResponse> {
@@ -112,25 +135,6 @@ export async function login(
     throw new BadRequestError({
       message: "Invalid email or password",
     });
-  } else {
-    /** generate, save and send a new verification otp for the user*/
-    const otp = generateOtp();
-
-    /**upsert-true...  */
-    await userVerificationModel.updateOne(
-      { email },
-      {
-        email,
-        otp,
-
-        type: OtpType.LOGIN,
-        expiresAt: new Date(Date.now() + 10 * 60 * 1000),
-        user: existingUserAuth._id,
-      },
-      { upsert: true }
-    );
-
-    //TODO: send email function goes here
   }
 
   /**generate and save access_token for user*/
