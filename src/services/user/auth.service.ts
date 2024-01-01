@@ -162,3 +162,6 @@ export async function login(
     user: user!,
   };
 }
+export async function logout(email: string): Promise<void> {
+  await userAuthTokenModel.deleteOne({ email });
+}
