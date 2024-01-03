@@ -67,6 +67,18 @@ class AuthController extends BaseController {
       this.handleError(err);
     }
   }
+  async handleLogout(): Promise<void> {
+    const { email } = this.req.body;
+    try {
+      const response = await authService.logout({
+        email,
+ 
+      } as any);
+      ResponseManager.success(this.res, response);
+    } catch (err: any) {
+      this.handleError(err);
+    }
+  }
 }
 
 export default AuthController;
