@@ -39,3 +39,9 @@ export interface ILoginRequest {
   email: string;
   password: string;
 }
+export interface ICreateQuizRequest{
+  createdBy: string;
+  title: string;
+  description?: string;
+  questions?: string[];
+}

@@ -12,17 +12,13 @@ const QuizSchema = new mongoose.Schema(
       type: String,
     },
     description: {
-      required: [true, "Quiz description is required"],
       type: String,
     },
     questions: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: strQuestionModelConstant,
-        required: [
-          true,
-          "Quiz must have at least one question",
-        ],
+
       },
     ],
     createdBy: {
